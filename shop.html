@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop Profile</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --card-bg: #ffffff;
+    }
+    body.dark {
+      --bg: #121212;
+      --text: #f1f1f1;
+      --card-bg: #1e1e1e;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1589652717521-10c0d092dea9?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+    .overlay {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .theme-toggle {
+      background: #ff9f00;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 900px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .rating {
+      color: #f39c12;
+      font-size: 1.2rem;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .gallery img {
+      width: 140px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .map {
+      margin: 20px 0;
+    }
+    iframe {
+      width: 100%;
+      height: 250px;
+      border: none;
+      border-radius: 10px;
+    }
+    .review-section {
+      margin-top: 30px;
+    }
+    textarea {
+      width: 100%;
+      height: 60px;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 1rem;
+      resize: none;
+      margin-bottom: 10px;
+    }
+    .review-btn {
+      background: #3498db;
+      color: #fff;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .review-list {
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.05);
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .review-item {
+      border-bottom: 1px solid #ccc;
+      padding: 6px 0;
+      font-size: 0.95rem;
+    }
+    .contact-info, .contact-form {
+      margin-top: 30px;
+    }
+    .contact-info p {
+      margin: 6px 0;
+      font-weight: bold;
+    }
+    .contact-form input, .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .contact-form button {
+      background: #27ae60;
+      color: #fff;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    @media(max-width: 600px) {
+      .gallery img {
+        width: 100px;
+        height: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <header>
+      <h1 id="shopName">Shop Profile</h1>
+      <button class="theme-toggle" onclick="toggleTheme()">🌙 Theme</button>
+    </header>
+
+    <div class="container">
+      <h2 id="shopTitle">Shop Name</h2>
+      <div class="rating" id="shopRating">⭐⭐⭐⭐☆ (4.0)</div>
+      <p id="shopDesc">This is the description for the selected shop.</p>
+      <p id="shopAddress">Located at: Area 1</p>
+
+      <div class="gallery" id="shopGallery">
+        <img src="https://source.unsplash.com/200x100/?shop" alt="Shop image" />
+        <img src="https://source.unsplash.com/200x100/?store" alt="Store" />
+        <img src="https://source.unsplash.com/200x100/?market" alt="Market" />
+      </div>
+
+      <div class="map">
+        <iframe id="shopMap" src="https://maps.google.com/maps?q=Hyderabad&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+      </div>
+
+      <div class="review-section">
+        <h3>Customer Reviews</h3>
+        <textarea id="reviewInput" placeholder="Write your review..."></textarea>
+        <button class="review-btn" onclick="submitReview()">Submit</button>
+        <div class="review-list" id="reviewList"></div>
+      </div>
+
+      <div class="contact-info">
+        <h3>📞 Contact Info</h3>
+        <p>Phone: +91 98765 43210</p>
+        <p>Email: shop@example.com</p>
+        <p>Owner: Mr. Ramesh Kumar</p>
+      </div>
+
+      <div class="contact-form">
+        <h3>📨 Contact Us</h3>
+        <form id="contactForm">
+          <input type="text" placeholder="Your Name" required />
+          <input type="email" placeholder="Your Email" required />
+          <textarea rows="4" placeholder="Your Message..." required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const index = params.get('index') || 0;
+
+    const fakeShopData = {
+      name: "Shop " + index,
+      desc: `This is a detailed description for Shop ${index}.`,
+      address: `Area ${parseInt(index) + 1}`,
+      rating: (3 + Math.random() * 2).toFixed(1)
+    };
+
+    document.getElementById('shopTitle').textContent = fakeShopData.name;
+    document.getElementById('shopName').textContent = fakeShopData.name;
+    document.getElementById('shopDesc').textContent = fakeShopData.desc;
+    document.getElementById('shopAddress').textContent = "Located at: " + fakeShopData.address;
+    document.getElementById('shopRating').textContent =
+      '★'.repeat(Math.round(fakeShopData.rating)) + '☆'.repeat(5 - Math.round(fakeShopData.rating)) + ` (${fakeShopData.rating})`;
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+    }
+
+    function submitReview() {
+      const reviewInput = document.getElementById('reviewInput');
+      const text = reviewInput.value.trim();
+      if (text) {
+        const reviewList = document.getElementById('reviewList');
+        const div = document.createElement('div');
+        div.className = 'review-item';
+        div.textContent = text;
+        reviewList.appendChild(div);
+        reviewInput.value = '';
+      }
+    }
+
+    // Optional: Alert on contact form submit
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert("Message sent! We'll get back to you soon.");
+      this.reset();
+    });
+  </script>
+</body>
+</html>
