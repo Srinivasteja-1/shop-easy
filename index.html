@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local Shops & Services</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('https://images.unsplash.com/photo-1542831371-d531d36971e6?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    h1 {
+      text-align: center;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+      margin: 20px 0 10px;
+    }
+    .overlay {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 12px;
+      backdrop-filter: blur(6px);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0 20px;
+    }
+    .controls input, .controls select {
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .nav-buttons button {
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+    }
+    .nav-buttons .Grocery { background: #2ecc71; }
+    .nav-buttons .Mobile { background: #3498db; }
+    .nav-buttons .Cement { background: #95a5a6; }
+    .nav-buttons .Mechanic { background: #e67e22; }
+    .nav-buttons .Clothing { background: #9b59b6; }
+    .nav-buttons i {
+      font-style: normal;
+    }
+    .category-section {
+      margin-bottom: 30px;
+    }
+    .category-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin: 20px 10px 10px;
+      border-bottom: 2px solid #fff;
+    }
+    .shops-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 15px;
+    }
+    .shop-card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      color: #000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .shop-card:hover {
+      transform: scale(1.03);
+    }
+    .shop-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+    .shop-info {
+      padding: 10px 15px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .shop-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .rating {
+      color: #f39c12;
+      font-size: 0.95rem;
+      margin: 5px 0;
+    }
+    .btn {
+      margin-top: auto;
+      padding: 8px 12px;
+      background: #ff9f00;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    @media(max-width: 768px) {
+      .shops-container {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>Local Shops & Services</h1>
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Search by name or address...">
+      <select id="ratingFilter">
+        <option value="all">All Ratings</option>
+        <option value="3">3 stars & up</option>
+        <option value="4">4 stars & up</option>
+        <option value="5">5 stars only</option>
+      </select>
+    </div>
+    <div class="nav-buttons" id="navButtons"></div>
+    <div id="categoriesContainer"></div>
+  </div>
+
+  <script>
+    const categoryIcons = {
+      Grocery: '🛒',
+      Mobile: '📱',
+      Cement: '🏗️',
+      Mechanic: '🔧',
+      Clothing: '👗'
+    };
+
+    const shops = Array.from({ length: 40 }, (_, i) => {
+      const categories = Object.keys(categoryIcons);
+      const category = categories[i % categories.length];
+      const name = `${category} Shop ${Math.floor(i / categories.length) + 1}`;
+      const imageUrls = {
+        Grocery: 'https://source.unsplash.com/300x200/?grocery,shop',
+        Mobile: 'https://source.unsplash.com/300x200/?mobile,phone',
+        Cement: 'https://source.unsplash.com/300x200/?cement,construction',
+        Mechanic: 'https://source.unsplash.com/300x200/?mechanic,garage',
+        Clothing: 'https://source.unsplash.com/300x200/?clothing,fashion'
+      };
+      return {
+        name,
+        category,
+        img: imageUrls[category],
+        address: `Area ${i + 1}`,
+        desc: `This is the description for ${name}`,
+        rating: (3 + Math.random() * 2).toFixed(1),
+        index: i
+      };
+    });
+
+    const container = document.getElementById('categoriesContainer');
+    const searchInput = document.getElementById('searchInput');
+    const ratingFilter = document.getElementById('ratingFilter');
+    const navButtons = document.getElementById('navButtons');
+
+    function scrollToCategory(category) {
+      const el = document.getElementById(`section-${category}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderNavButtons(categories) {
+      navButtons.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = `${categoryIcons[cat]} ${cat}`;
+        btn.className = cat;
+        btn.onclick = () => scrollToCategory(cat);
+        navButtons.appendChild(btn);
+      });
+    }
+
+    function renderShops() {
+      const searchValue = searchInput.value.toLowerCase();
+      const ratingValue = parseFloat(ratingFilter.value);
+      container.innerHTML = '';
+
+      const grouped = shops.reduce((acc, shop) => {
+        const matchSearch = shop.name.toLowerCase().includes(searchValue) || shop.address.toLowerCase().includes(searchValue);
+        const matchRating = isNaN(ratingValue) || parseFloat(shop.rating) >= ratingValue;
+        if (matchSearch && matchRating) {
+          if (!acc[shop.category]) acc[shop.category] = [];
+          acc[shop.category].push(shop);
+        }
+        return acc;
+      }, {});
+
+      renderNavButtons(Object.keys(grouped));
+
+      Object.entries(grouped).forEach(([category, items]) => {
+        const section = document.createElement('div');
+        section.className = 'category-section';
+        section.id = `section-${category}`;
+
+        const title = document.createElement('div');
+        title.className = 'category-title';
+        title.textContent = category;
+
+        const grid = document.createElement('div');
+        grid.className = 'shops-container';
+
+        items.forEach(shop => {
+          const card = document.createElement('div');
+          card.className = 'shop-card';
+          card.id = `shop-${shop.index}`;
+          card.innerHTML = `
+            <img class="shop-img" src="${shop.img}" alt="${shop.category}" />
+            <div class="shop-info">
+              <div class="shop-name">${shop.name}</div>
+              <div>${shop.address}</div>
+              <div class="rating">${'★'.repeat(Math.round(shop.rating)) + '☆'.repeat(5 - Math.round(shop.rating))} (${shop.rating})</div>
+              <a class="btn" href="shop.html?index=${shop.index}">View Profile</a>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        section.appendChild(title);
+        section.appendChild(grid);
+        container.appendChild(section);
+      });
+    }
+
+    searchInput.addEventListener('input', renderShops);
+    ratingFilter.addEventListener('change', renderShops);
+
+    renderShops();
+  </script>
+</body>
+</html>
